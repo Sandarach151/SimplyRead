@@ -26,16 +26,40 @@ app.use(session({secret: 'squire'}));
 app.set('views', './Views');
 
 app.get('/list', async (req, res) => {
-    const books = await getBooksList("./Books");
-    res.render('Inside/Books.ejs', {books});
-})
-
-app.get('/read', async (req, res) => {
-    const paragraphs = await getParagraphs("Books/(Lord of the Rings 3) Tolkien, J R R_  - Return of the King.epub-1693650391266-652290117");
+    const books = ["The Lion, the Witch and the Wardrobe",
+    "Harry Potter and the Philosopher's Stone",
+    "The Maze Runner",
+    "Lord of the Flies",
+    "Alice's Adventures in Wonderland",
+    "The Adventures of Tom Sawyer",
+    "The Wonderful Wizard of Oz"];
     const data = await squery('SELECT * FROM users WHERE userID = ?', [req.session.user_id]);
     const username = data[0].userName;
     const points = data[0].userPoints;
-    res.render('Inside/ParagraphReader.ejs', {paragraphs, username, points});
+    res.render('Inside/Books.ejs', {books, username, points});
+})
+
+app.get('/read/:index', async (req, res) => {
+    const filepathArray = ["Uploads/(Chronicles of Narnia_ Publication order 1) C. S. Lewis, Pauline Baynes - The Lion, the Witch and the Wardrobe-HarperCollins (1994).epub-1699648133898-81154849",
+"Uploads/(Harry Potter 1) Rowling, J.K. - Harry Potter 01 - Harry Potter and the Philosopherâs Stone.epub-1699648746730-530622826",
+"Uploads/(Maze Runner Trilogy 2) Dashner, James - Maze Runner.epub-1699649081630-425211832",
+"Uploads/Golding, William - Lord of the flies-Faber & Faber_Coward-McCann (1962).epub-1699648556966-453004420",
+"Uploads/pg11.epub-1699648204631-316489502",
+"Uploads/pg74.epub-1699648291202-385558837",
+"Uploads/pg43936.epub-1699647545930-479598061"];
+    const titleArray = ["The Lion, the Witch and the Wardrobe",
+"Harry Potter and the Philosopher's Stone",
+"The Maze Runner",
+"Lord of the Flies",
+"Alice's Adventures in Wonderland",
+"The Adventures of Tom Sawyer",
+"The Wonderful Wizard of Oz"];
+    const paragraphs = await getParagraphs(filepathArray[req.params.index]);
+    const title = titleArray[req.params.index];
+    const data = await squery('SELECT * FROM users WHERE userID = ?', [req.session.user_id]);
+    const username = data[0].userName;
+    const points = data[0].userPoints;
+    res.render('Inside/ParagraphReader.ejs', {paragraphs, title, username, points});
 })
 
 app.get('/logout', (req, res) => {

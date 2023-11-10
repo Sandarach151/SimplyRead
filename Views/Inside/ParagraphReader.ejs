@@ -25,10 +25,67 @@
   </style>
 </head>
 <body style="background-color: black; color: white;">
-    <%- include('Partials/Navbar-Blue.ejs') %> 
+  <nav class="navbar is-link" role="navigation" aria-label="main navigation">
+    <style>
+      .navbar-item:hover,
+      .navbar-link:hover,
+      #signUpButton:hover,
+      #logInButton:hover,
+      .button {
+        text-decoration: none !important;
+      }
+  
+      .userbtn{
+        font-size: larger;
+      }
+    </style>
+    <div class="navbar-brand">
+      <a class="navbar-item" href="..\">
+        Bookguessr
+      </a>
+  
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="..\list">
+          Shelf
+        </a>
+  
+        <a class="navbar-item" href="..\play">
+          Play
+        </a>
+  
+        <a class="navbar-item" href="..\about">
+          About
+        </a>
+        
+        <a class="navbar-item" href="..\leaderboard">
+          Leaderboard
+        </a>
+      </div>
+  
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link userbtn">
+            <%= username %>: <%= points %> points
+          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href=".\logout">
+              Logout
+            </a>
+          </div>
+        </div>
+    </div>
+  </nav>  
   <header class="bg-primary text-white py-3">
     <div class="container text-center">
-      <h1 class="display-4">Reader</h1>
+      <h1 class="display-4" id="bookTitle"><%=title %></h1>
     </div>
   </header>
   <div class="container mt-5">
@@ -71,6 +128,15 @@
 <script>
     $(document).ready(function(){
         let paraNum = 0;
+        let title = $("#bookTitle").html();
+        if(localStorage.getItem(title)==null) {
+          localStorage.setItem(title, JSON.stringify(paraNum));
+          $(`#curParagraph_${paraNum}`).prop("hidden", false);
+        }
+        else{
+          paraNum = JSON.parse(localStorage.getItem(title));
+          $(`#curParagraph_${paraNum}`).prop("hidden", false);
+        }
         var synth = null;
         $("#nxtBtn").click(function(){
             if(synth!=null){
@@ -81,6 +147,7 @@
             }
             $(`#curParagraph_${paraNum}`).prop("hidden", true);
             paraNum++;
+            localStorage.setItem(title, JSON.stringify(paraNum));
             $(`#curParagraph_${paraNum}`).prop("hidden", false);
         })
         $("#prevBtn").click(function(){
@@ -92,6 +159,7 @@
             }
             $(`#curParagraph_${paraNum}`).prop("hidden", true);
             paraNum--;
+            localStorage.setItem(title, JSON.stringify(paraNum));
             $(`#curParagraph_${paraNum}`).prop("hidden", false);
         })
         $("#readAloudBtn").click(function(){
