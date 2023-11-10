@@ -2,6 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const getContent = require('./JS/getContent');
+const getChapterText = getContent.getChapterText;
+const getParagraphs = getContent.getParagraphs;
 const sqlcon = require("./JS/sqlcon");
 const squery = sqlcon.squery;
 const multerUpload = require("./JS/multerUpload");
@@ -14,11 +17,26 @@ const handlePlay = require('./JS/handlePlay');
 const showPlay = handlePlay.showPlay;
 const sorting  = require('./JS/sorting');
 const sortBy = sorting.sortBy;
+const books = require('./JS/getBooks');
+const getBooksList = books.getBooksList;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(session({secret: 'squire'}));
 app.set('views', './Views');
+
+app.get('/list', async (req, res) => {
+    const books = await getBooksList("./Books");
+    res.render('Inside/Books.ejs', {books});
+})
+
+app.get('/read', async (req, res) => {
+    const paragraphs = await getParagraphs("Books/(Lord of the Rings 3) Tolkien, J R R_  - Return of the King.epub-1693650391266-652290117");
+    const data = await squery('SELECT * FROM users WHERE userID = ?', [req.session.user_id]);
+    const username = data[0].userName;
+    const points = data[0].userPoints;
+    res.render('Inside/ParagraphReader.ejs', {paragraphs, username, points});
+})
 
 app.get('/logout', (req, res) => {
     req.session.user_id = null;

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://st2.depositphotos.com/1003899/5538/v/950/depositphotos_55385721-stock-illustration-stylized-calligraphic-b.jpg" type="image/x-icon">
+  <title>Bookguessr</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .navbar-item:hover,
+    .navbar-link:hover,
+    #signUpButton:hover,
+    #logInButton:hover {
+      text-decoration: none !important;
+    }
+    #topPlaceholder{
+      color: rgb(101, 122, 227);
+    }
+    #summaryBtn, #nxtBtn, #readAloudBtn, #prevBtn{
+      padding: 15px;
+      margin: 10px;
+      font-size: x-large;
+    }
+  </style>
+</head>
+<body style="background-color: black; color: white;">
+    <%- include('Partials/Navbar-Blue.ejs') %> 
+  <header class="bg-primary text-white py-3">
+    <div class="container text-center">
+      <h1 class="display-4">Reader</h1>
+    </div>
+  </header>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-4">
+          <blockquote class="blockquote">
+            <% for(let i=0; i<paragraphs.length; i++){ %>
+                <p id="curParagraph_<%= i %>" hidden="true"><%= paragraphs[i] %></p>
+            <% } %>
+          </blockquote>
+        </div>
+        <hr>
+        <div class="container text-center">
+          <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-primary btn-block btn-lg" id="summaryBtn">Summary</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary btn-block btn-lg" id="readAloudBtn">Read Aloud</button>
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-primary btn-block btn-lg" id="prevBtn">Previous</button>
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-primary btn-block btn-lg" id="nxtBtn">Next</button>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+    <br>
+    <br>
+  </div>
+  <%- include('Partials/Footer-Blue.ejs') %>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+<script>
+    $(document).ready(function(){
+        let paraNum = 0;
+        var synth = null;
+        $("#nxtBtn").click(function(){
+            if(synth!=null){
+                synth.cancel();
+                $("#readAloudBtn").html("Read Aloud");
+                $("#readAloudBtn").removeClass("btn-secondary");
+                $("#readAloudBtn").addClass("btn-primary");
+            }
+            $(`#curParagraph_${paraNum}`).prop("hidden", true);
+            paraNum++;
+            $(`#curParagraph_${paraNum}`).prop("hidden", false);
+        })
+        $("#prevBtn").click(function(){
+            if(synth!=null){
+                synth.cancel();
+                $("#readAloudBtn").html("Read Aloud");
+                $("#readAloudBtn").removeClass("btn-secondary");
+                $("#readAloudBtn").addClass("btn-primary");
+            }
+            $(`#curParagraph_${paraNum}`).prop("hidden", true);
+            paraNum--;
+            $(`#curParagraph_${paraNum}`).prop("hidden", false);
+        })
+        $("#readAloudBtn").click(function(){
+            if($("#readAloudBtn").html()=="Read Aloud"){
+            if('speechSynthesis' in window) {
+                $("#readAloudBtn").html("Cancel");
+                var curExtract = $(`#curParagraph_${paraNum}`).html();
+                synth = window.speechSynthesis;
+                var utterance = new SpeechSynthesisUtterance(curExtract);
+                utterance.rate = 1.0;
+                synth.speak(utterance);
+                $("#readAloudBtn").removeClass("btn-primary");
+                $("#readAloudBtn").addClass("btn-secondary");
+            }
+            else{
+                console.log("No Speech");
+            }
+            }
+            else{
+            synth.cancel();
+            $("#readAloudBtn").html("Read Aloud");
+            $("#readAloudBtn").removeClass("btn-secondary");
+            $("#readAloudBtn").addClass("btn-primary");
+            }
+        })
+    });
+</script>
+</html>
