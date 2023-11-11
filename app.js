@@ -1,5 +1,7 @@
 const express = require('express');
 const session = require('express-session');
+const webdict = require('webdict');
+const axios = require('axios');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const getContent = require('./JS/getContent');
@@ -24,6 +26,44 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(session({secret: 'squire'}));
 app.set('views', './Views');
+
+app.get('/hangman', async (req, res) => {
+    const wordData = await squery('SELECT word FROM words ORDER BY RAND() LIMIT 1');
+    const word = wordData[0].word;
+    const data = await squery('SELECT * FROM users WHERE userID = ?', [req.session.user_id]);
+    const username = data[0].userName;
+    const points = data[0].userPoints;
+    res.render('Inside/Hangman.ejs', {username, points, word});
+})
+
+app.post('/newword', async (req, res) => {
+    const definition = await getDefinition(req.body.newWord);
+    await squery('insert into words (word, meaning) values (?, ?);', [req.body.newWord, definition]);
+    res.redirect("./vocab");
+})
+
+async function getDefinition(word) {
+    try {
+        const response = await axios.get(`https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=2179c69e-c15d-48d7-8cc2-38cf3f2b7547`);
+        if (Array.isArray(response.data) && response.data.length > 0) {
+            // Assuming you want the first definition for the word
+            const definition = response.data[0].shortdef[0];
+            return definition;
+        } else {
+            console.log(`No definition found for '${word}'.`);
+        }
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+    }
+}
+
+app.get('/vocab', async(req, res) => {
+    const words = await squery('SELECT word, meaning FROM words WHERE wordID>=1');
+    const data = await squery('SELECT * FROM users WHERE userID = ?', [req.session.user_id]);
+    const username = data[0].userName;
+    const points = data[0].userPoints;
+    res.render('Inside/Vocab.ejs', {username, points, words});
+})
 
 app.get('/list', async (req, res) => {
     const books = ["The Lion, the Witch and the Wardrobe",

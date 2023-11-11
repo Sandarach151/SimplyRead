@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://st2.depositphotos.com/1003899/5538/v/950/depositphotos_55385721-stock-illustration-stylized-calligraphic-b.jpg" type="image/x-icon">
+    <title>SimpliRead</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #000000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <%- include('Partials/Navbar-Blue.ejs') %>
+    <header class="bg-primary text-white py-4">
+        <div class="container text-center">
+            <h1 class="display-4">Vocab</h1>
+        </div>
+    </header>
+
+    <div class="container mt-4">
+        <form action="/newword" method="post">
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="newWord" style="font-size: larger;" name="newWord" placeholder="Enter a new word" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br>
+    <div class="container">
+        <% for (let i = 0; i < words.length; i++) { %>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6 mt-4">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="toggleDefinition('<%= i %>')" id="wordDisplay<%= i %>" style="font-size: xx-large;"><%= words[i].word %></button>
+                    <div class="mt-2" hidden="true" id="definitionDisplay<%= i %>">
+                        <p class="font-weight-bold" style="font-size: x-large;"><%= words[i].meaning %></p>
+                    </div>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        <% } %>
+    </div>
+    <br>
+    <%- include('Partials/Footer-Blue.ejs') %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+<script>
+    function toggleDefinition(i) {
+        $("#definitionDisplay" + i).prop("hidden", !($("#definitionDisplay" + i).prop("hidden")));
+    }
+</script>
+</html>

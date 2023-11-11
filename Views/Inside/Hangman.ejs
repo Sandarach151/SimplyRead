@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://st2.depositphotos.com/1003899/5538/v/950/depositphotos_55385721-stock-illustration-stylized-calligraphic-b.jpg" type="image/x-icon">
+    <title>SimpliRead</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Add your CSS styles for a dark-themed UI here */
+    body {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .game-container {
+      background-color: #333; /* Dark gray background */
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      max-width: 800px; /* Increased width for fullscreen */
+      margin: 30px auto;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 36px;
+      color: #fff;
+    }
+    .game-content {
+      text-align: center;
+    }
+    .word-display {
+      font-size: 28px; /* Larger font size for the word display */
+    }
+    .alphabet-button {
+      width: 60px; /* Larger button size */
+      height: 60px; /* Larger button size */
+      text-align: center;
+      margin: 10px; /* Increased margin for spacing */
+      font-size: 28px; /* Larger font size for the buttons */
+      cursor: pointer;
+      background-color: #3498db;
+      color: #fff;
+      border: 3px solid #2980b9; /* Increased border width */
+      border-radius: 10px; /* Larger border radius */
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .alphabet-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.1);
+    }
+    .used-alphabet-button {
+      background-color: #e74c3c;
+      border-color: #c0392b;
+    }
+    .game-result {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #a5a5a5;
+    }
+    .play-again {
+      background-color: #2ecc71;
+      color: #fff;
+      padding: 20px 40px; /* Larger button size */
+      border: none;
+      border-radius: 10px; /* Larger border radius */
+      font-size: 28px; /* Larger font size for the button */
+      cursor: pointer;
+    }
+    .play-again:hover {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+    <%- include('Partials/Navbar-Blue.ejs') %>
+    <header class="bg-primary text-white py-5">
+        <div class="container text-center">
+          <h1 class="display-3">Hangman</h1>
+        </div>
+      </header>
+      <br><br><br>
+      <div id="word" hidden="true"><%= word %></div>
+  <div class="game-container">
+    <div class="game-content">
+      <div id="word-display" class="word-display"></div>
+      <div id="lives">
+        Lives Left: <span id="life-count">8</span>
+      </div>
+      <div id="alphabet">
+        <!-- Create alphabet buttons dynamically using JavaScript -->
+      </div>
+      <div id="result" class="game-result"></div>
+      <button id="play-again" class="play-again">Play Again</button>
+    </div>
+  </div>
+  <br><br><br><br><br>
+  <%- include('Partials/Footer-Blue.ejs') %>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+  <script>
+    let answer, life, chosenLetters, game_over;
+
+    function initializeGame() {
+      answer = document.getElementById("word").innerText;
+      life = 8;
+      chosenLetters = [];
+      game_over = false;
+      displayBlanks();
+      document.getElementById('result').textContent = '';
+      document.getElementById('play-again').style.display = 'none';
+      updateLifeCount();
+      createAlphabetButtons();
+    }
+
+    function displayBlanks() {
+      const displayTxt = answer
+        .split('')
+        .map(letter => (chosenLetters.includes(letter) ? letter : (letter.match(/[a-z]/i) ? '_ ' : letter)))
+        .join('');
+      document.getElementById('word-display').textContent = displayTxt;
+    }
+
+    function updateLifeCount() {
+      document.getElementById('life-count').textContent = life;
+    }
+
+    function createAlphabetButtons() {
+      const alphabetContainer = document.getElementById('alphabet');
+      alphabetContainer.innerHTML = '';
+      for (let letter of 'abcdefghijklmnopqrstuvwxyz') {
+        const button = document.createElement('button');
+        button.textContent = letter;
+        button.className = 'alphabet-button';
+        button.addEventListener('click', function () {
+          handleGuess(letter, button);
+        });
+        alphabetContainer.appendChild(button);
+      }
+    }
+
+    function handleGuess(inputLetter, button) {
+      if (game_over) {
+        return;
+      }
+
+      if (chosenLetters.includes(inputLetter)) {
+        alert('You have already guessed this letter.');
+        return;
+      }
+
+      chosenLetters.push(inputLetter);
+
+      if (answer.includes(inputLetter)) {
+        displayBlanks();
+        if (!document.getElementById('word-display').textContent.includes('_')) {
+          endGame('win');
+        }
+      } else {
+        life--;
+        if (life === 0) {
+          endGame('lose');
+        }
+      }
+
+      button.className = 'alphabet-button used-alphabet-button';
+      button.disabled = true;
+      updateLifeCount();
+    }
+
+    function endGame(result) {
+      game_over = true;
+      document.getElementById('result').textContent = `You ${result}! Answer: ${answer}`;
+      document.getElementById('play-again').style.display = 'block';
+    }
+
+    document.getElementById('play-again').addEventListener('click', initializeGame);
+
+    initializeGame();
+  </script>
+</body>
+</html>

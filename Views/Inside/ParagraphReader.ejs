@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="https://st2.depositphotos.com/1003899/5538/v/950/depositphotos_55385721-stock-illustration-stylized-calligraphic-b.jpg" type="image/x-icon">
-  <title>Bookguessr</title>
+  <title>SimpliRead</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">  
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
@@ -41,7 +41,7 @@
     </style>
     <div class="navbar-brand">
       <a class="navbar-item" href="..\">
-        Bookguessr
+        SimpliRead
       </a>
   
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -68,6 +68,14 @@
         <a class="navbar-item" href="..\leaderboard">
           Leaderboard
         </a>
+
+        <a class="navbar-item" href="..\vocab">
+          Vocabulary
+        </a>
+
+        <a class="navbar-item" href="..\hangman">
+          Hangman
+        </a>
       </div>
   
       <div class="navbar-end">
@@ -88,6 +96,7 @@
       <h1 class="display-4" id="bookTitle"><%=title %></h1>
     </div>
   </header>
+  <br><br><br><br>
   <div class="container mt-5">
     <div class="card">
       <div class="card-body">
@@ -121,6 +130,7 @@
     <br>
     <br>
   </div>
+  <br><br><br><br><br><br><br><br><br><br>
   <%- include('Partials/Footer-Blue.ejs') %>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
