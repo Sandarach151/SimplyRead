@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            line-height: 1.6; /* You can adjust this value to increase or decrease the line spacing */
+            font-size: 25px; /* Adjust the font size as needed */
+            font-family: 'Helvetica', sans-serif; /* Choose your preferred font */
+            background-color: #333;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin: 5px;
+            font-size: 40px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        header, footer {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 0px;
+            font-family: 'Helvetica', sans-serif;
+
+        }
+
+        .inpArea{
+            width: 600px;
+            height: 400px;
+            min-width: 600px;
+            min-height: 400px;
+            max-width: 600px;
+            max-height: 400px;
+            font-size: 22px;
+            font-family: 'Helvetica', sans-serif;
+            border-radius: 10px;
+        }
+
+        .goButton {
+            background-color: black;
+            color: white;
+            font-size: 25px;
+            border-radius: 8px;
+            width: 80px;
+            height: 40px;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: #333;
+            flex-grow: 1;
+            padding: 30px;
+        }
+
+        .paragraphLoc {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 50px;
+            list-style-type: none;
+        }
+
+        .box {
+            background-color: white;
+            color: black;
+            border-radius: 20px;
+            padding: 20px;
+            margin-right: 15px;
+            margin-left: 15px;
+            flex: 1;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .bullet-point {
+            margin-left: 20px;
+            margin-right: 20px;
+            list-style-type: disc;
+        }
+    </style>
+    <title>Simple Summary Maker</title>
+</head>
+
+<body>
+    <header>
+        <h1>Simple Summary</h1>
+    </header>
+    <div class="content-container">
+        <div class="box">
+            <div class="container">
+                <h1>Difficult Paragraph:</h1>
+                <!-- Replace the static paragraph with a dynamic text field -->
+                <form action="/" method="post">
+                    <textarea class="inpArea" name="user_paragraph" rows="5" cols="50" required>{{ paragraph }}</textarea>
+                    <br>
+                    <button type="submit" class="goButton">Go</button>
+                </form>
+            </div>
+        </div>
+        <div class="box">
+            <div class="container">
+                <h1>Simple Summary:</h1>
+                {% if phrases %}
+                    <ul>
+                        {% for phrase in phrases %}
+                            <li class="bullet-point">{{ phrase }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>© 2023 SimpliRead, All Rights Reserved</p>
+    </footer>
+</body>
+
+</html>
