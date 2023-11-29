@@ -1,12 +1,5 @@
 const mysql = require('mysql2');
 
-const con = mysql.createConnection({
-	host: "localhost",
-	user: "root",
-	password: "Fibo@13213455",
-	database: "bookguessr"
-});
-
 async function squery(queryString, values) {
 	return new Promise((resolve, reject) => {
 		con.connect(function (err) {
